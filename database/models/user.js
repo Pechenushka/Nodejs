@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt-nodejs');
 const uuidv4 = require('uuid/v4');
 
 var User = (sequelize, DataTypes) => {
@@ -11,12 +11,10 @@ var User = (sequelize, DataTypes) => {
         login: {
             type: DataTypes.STRING,
             unique: true,
+            defaultValue: uuidv4(),
             allowNull: false
         },
-        role: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        },
+
         password: {
             type: DataTypes.STRING,
             allowNull: false
@@ -38,6 +36,7 @@ var User = (sequelize, DataTypes) => {
                 user.password = bcrypt.hashSync(user.password, salt);
             }
         },
+
     });
     User.associate = function(models) {
         // associations can be defined here
@@ -45,10 +44,5 @@ var User = (sequelize, DataTypes) => {
 
     return User;
 };
-
-// create all the defined tables in the specified database.
-// sequelize.sync()
-//     .then(() => console.log('User table has been successfully created!'))
-//     .catch(error => console.log('An error occured: ', error));
 
 module.exports = User;

@@ -1,14 +1,15 @@
+<%- include ('../layouts/header') %>
 <div class="row">
 
     <div class=".col-md-4.col-md-offset-4">
         <H1>Sign IN</H1>
-        {{# if hasErrors}}
+        <% if (hasErrors) {%>
             <div class="alert">
-                {{#each messages}}
-                    <p>{{this}}</p>
-                {{/each}}
+                <%  messages.forEach(msg => { %>
+                    <p><%=msg  %> </p>
+                <% }) %> 
             </div>
-        {{/if}}
+        <%}%>
 
         <form action="/user/signin" method="post">
             <div class="form-group">
@@ -20,7 +21,7 @@
                 <input type="password" id="password" name="password" class="form-control">
             </div>
             <button type="submit">Sign IN </button>
-            <input type="hidden", name="_csrf", value="{{csrfToken}}">
+            <input type="hidden", name="_csrf", value="<%=csrfToken%>">
 
         </form>
         <a href="/user/signup">Sign UP</a>
@@ -29,3 +30,4 @@
     </div>
 
 </div>
+<%- include ('../layouts/footer') %>

@@ -1,77 +1,74 @@
-var passport = require('passport');
-var User = require('../models/user');
-var LocalStrategy =require('passport-local').Strategy;
+const passport = require('passport');
+const models = require('../database/models/index');
+const LocalStrategy =require('passport-local').Strategy;
+const bcrypt = require('bcrypt-nodejs');
 
-passport.serializeUser(function (user, done) {console.log("uu");
-done(null, user.id);
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
 });
+
 
 passport.deserializeUser(function (id, done) {
-    User.findById(id, function (err, user) {
-
-        done(err, user);
-    });
+    let user=models.User.findAll({raw: true ,where: {id:id}});
+    done(null, user);
 });
+
+
 passport.use('local.signup', new LocalStrategy(
     {   usernameField:'email',
         passwordField: 'password',
         passReqToCallback: true
-    },
-    function (req, email, password,done) {
+    },  async function (req, email, password,done) {
+        console.log('uu');
         req.checkBody('email', 'invalid email').notEmpty().isEmail();
         req.checkBody('password', 'invalid password').notEmpty().isLength({min:3});
-        var errors = req.validationErrors();
+        let errors = req.validationErrors();
         if(errors){
-            var messages = [];
+            let messages = [];
             errors.forEach(function (error) {
                 messages.push(error.msg);
             });
             return done(null, false, req.flash('error', messages));
-
         }
-    User.findOne({'email':email}, function (err, user) {
-        if(err){return done(err);}
 
-        if (user){
-                   return done(null, false, {message: 'Email already exist'});
-                 }
-        var newUser = new User();
-        newUser.email=email;
-        newUser.password=newUser.encryptPassword(password);
-        newUser.save(function (err,result) {
-            if(err){return done(err);}
+        const user = await models.User.findOne({ raw: true, where: { login: email } });
 
+            if (user){
+                return done(null, false, {message: 'Email already exist'});
+            }
+
+            let newUser = await models.User.create({ login:email,password: password });
             return done(null, newUser);
-        });
-        
-    });
-
 }));
+
 
 passport.use('local.signin', new LocalStrategy({
     usernameField:'email',
     passwordField: 'password',
     passReqToCallback: true
-}, function (req, email, password, done) {
+}, async function (req, email, password, done) {
     req.checkBody('email', 'invalid email').notEmpty().isEmail();
     req.checkBody('password', 'invalid password').notEmpty();
-    var errors = req.validationErrors();
+    const errors = req.validationErrors();
     if(errors){
-        var messages = [];
+        let messages = [];
         errors.forEach(function (error) {
             messages.push(error.msg);
         });
         return done(null, false, req.flash('error', messages));
     }
-    User.findOne({'email':email}, function (err, user) {
-        if(err){return done(err);}
 
-        if (!user){
-            return done(null, false, {message: 'No userfound'});
-        }
-        if(!user.validPassword(password)){
-            return done(null, false, {message: 'wrong password'});
-        }
-        return done(null, user);
-    });
+
+    let user = await models.User.findOne({ raw: true, where: { login: email } });
+
+    if (!user){
+        return done(null, false, {message: 'No userfound'});
+    }
+
+    if(!bcrypt.compareSync(password,user.password)){
+        return done(null, false, {message: 'wrong password'});
+    }
+
+    return done(null, user);
+
 }));

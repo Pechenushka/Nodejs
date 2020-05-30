@@ -1,33 +1,55 @@
+<%- include ('../layouts/header') %>
 <div class="row">
-    <div class="col-sm-6 col-md-4 col-md-offset-4 col-sm-offset-3">
-        <div id="success" class="alert alert-success" {{#if noMessages}}hidden{{/if}}>
-            {{ successMsg}}
-        </div>
+  <div class="col-sm-6 col-md-4 col-md-offset-4 col-sm-offset-3">
+    <div id="success" class="alert alert-success" <% if (noMessages) {%>
+      hidden<%}%>> <%=successMsg%>
     </div>
+  </div>
 </div>
-
 
 <div>
-{{# each products }}
+    <form method="post" action="/sort/Asc">
+        <input
+          type="submit"
+          class="btn"
+          value="Sort Asc"
+        />
+      </form>
+      <form method="post" action="/sort/Desc">
+        <input
+          type="submit"
+          class="btn"
+          value="Sort Desc"
+        />
+      </form>
 
-            <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                    <img src="{{this.imagePath}}" alt="..." class="img-responsive">
-                    <div class="caption">
-                        <h3>{{this.title}}</h3>
+  <% products.forEach( product => { %>
 
-                        <div class="clearfix">
-                            <div class="price pull-left">${{this.price}}</div>
-                            <form method="post" action="/add-to-cart/{{this.id}}"><input type="submit" class="btn btn-success pull-right" value="Add to cart"></form>
-                            <a href="/info/{{this.id}}" class="btn btn pull-right" role="button">More</a>
-                        </div>
-                    </div>
-                </div>
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="<%= product.imagePath%>" alt="..." class="img-responsive" />
+      <div class="caption">
+        <h3><%= product.title %></h3>
 
-
-
-
+        <div class="clearfix">
+          <div class="price pull-left">$<%= product.price %></div>
+          <form method="post" action="/add-to-cart/<%= product.id %>">
+            <input
+              type="submit"
+              class="btn btn-success pull-right"
+              value="Add to cart"
+            />
+          </form>
+          <a
+            href="/info/<%= product.id %>"
+            class="btn btn pull-right"
+            role="button"
+            >More</a
+          >
+        </div>
+      </div>
     </div>
-{{/each}}
-
+  </div>
+  <%}) %>
 </div>
+<%- include ('../layouts/footer') %>
