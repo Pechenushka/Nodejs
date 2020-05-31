@@ -11,20 +11,20 @@
             </div>
         <%}%>
 
-        <form action="/user/signin" method="post">
+        <form action="/auth/signin" method="post">
             <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="text" id="email" name="email" class="form-control">
+                <label for="email" >E-mail</label>
+                <input type="email" id="email" name="email" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control">
+                <input type="password" id="password" name="password" class="form-control" required>
             </div>
             <button type="submit">Sign IN </button>
             <input type="hidden", name="_csrf", value="<%=csrfToken%>">
 
         </form>
-        <a href="/user/signup">Sign UP</a>
+        <a href="/auth/signup">Sign UP</a>
 
 
     </div>

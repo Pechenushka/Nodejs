@@ -8,18 +8,31 @@
 </div>
 
 <div>
-    <form method="post" action="/sort/Asc">
+    <form method="post" action="api/sort/Asc">
         <input
           type="submit"
           class="btn"
           value="Sort Asc"
         />
       </form>
-      <form method="post" action="/sort/Desc">
+      <form method="post" action="api/sort/Desc">
         <input
           type="submit"
           class="btn"
           value="Sort Desc"
+        />
+      </form>
+      <form method="post" action="api/search">
+        <input
+        type="text"
+        id="search"
+        name="search"
+        value=""
+      />
+        <input
+          type="submit"
+          class="btn"
+          value="Search"
         />
       </form>
 
@@ -33,7 +46,7 @@
 
         <div class="clearfix">
           <div class="price pull-left">$<%= product.price %></div>
-          <form method="post" action="/add-to-cart/<%= product.id %>">
+          <form method="post" action="api/add-to-cart/<%= product.id %>">
             <input
               type="submit"
               class="btn btn-success pull-right"
@@ -41,7 +54,7 @@
             />
           </form>
           <a
-            href="/info/<%= product.id %>"
+            href="public/info/<%= product.id %>"
             class="btn btn pull-right"
             role="button"
             >More</a

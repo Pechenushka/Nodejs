@@ -15,9 +15,9 @@
                         <button class="btn primary", type="button", data-toggle="dropdown">Action<span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li>
-                                <form method="post" action="/reduce/<%=product.item.id%>"><input type="submit" class="btn" value="-1"></form>
+                                <form method="post" action="api/reduce/<%=product.item.id%>"><input type="submit" class="btn" value="-1"></form>
                             </li>
-                            <form method="post" action="/remove/<%=product.item.id%>"><input type="submit" class="btn" value="-ALL"></form>
+                            <form method="post" action="api/remove/<%=product.item.id%>"><input type="submit" class="btn" value="-ALL"></form>
 
                         </ul>
                     </div>

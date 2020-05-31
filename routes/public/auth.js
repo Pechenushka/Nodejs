@@ -3,15 +3,15 @@ const router = express.Router();
 const csrf = require("csurf");
 const passport = require("passport");
 
-const Cart = require("../models/cart");
-const models = require("../database/models/index");
+const Cart = require("./../../models/cart");
+const models = require("./../../database/models/index");
+const { isLoggedIn, notLoggedIn } = require("./../midleware");
 
 const csrfProtection = new csrf();
 router.use(csrfProtection);
 
 router.get("/profile", isLoggedIn, async function (req, res, next) {
   const [user] = await req.user;
-  console.log(user);
   let orders = await models.Order.findAll({
     raw: true,
     where: { user: user.id },
@@ -31,10 +31,6 @@ router.get("/profile", isLoggedIn, async function (req, res, next) {
 router.get("/logout", isLoggedIn, function (req, res, next) {
   req.logout();
   res.redirect("/");
-});
-
-router.use("/", notLoggedIn, function (req, res, next) {
-  next();
 });
 
 router.get("/signup", function (req, res, next) {
@@ -94,18 +90,8 @@ router.post(
   }
 );
 
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/");
-}
-
-function notLoggedIn(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/");
-}
+router.use("/", notLoggedIn, function (req, res, next) {
+  res.redirect("/auth/signin");
+});
 
 module.exports = router;
